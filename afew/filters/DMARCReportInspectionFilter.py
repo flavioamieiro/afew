@@ -86,7 +86,7 @@ def has_failed(node):
     :param node: XML node holding status as text.
     :returns: Whether the status is reported as "failed".
     """
-    if not node or not node.text:
+    if node is None or node.text is None:
         return True
     return (node.text.strip() not in ['pass', 'none'])
 
