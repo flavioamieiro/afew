@@ -13,6 +13,8 @@ Add tags 2 of the tags below:
 
 """
 
+import email
+import email.policy
 import logging
 import re
 import tempfile
@@ -37,9 +39,12 @@ class ReportFilesIterator:
     """
     def __init__(self, message):
         self.message = message
+        self.parser = email.parser.BytesParser(policy=email.policy.default)
 
     def __iter__(self):
-        for part in self.message.get_message_parts():
+        with self.message.path.open("rb") as fp:
+            parsed_message = self.parser.parse(fp)
+        for part in parsed_message.iter_parts():
             if part.get_content_type() == 'application/zip':
                 with tempfile.TemporaryFile(suffix='.zip') as file:
                     file.write(part.get_payload(decode=True))
