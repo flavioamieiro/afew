@@ -152,7 +152,10 @@ class DMARCReportInspectionFilter(Filter):
             self.__module__, self.__class__.__name__))
 
     def handle_message(self, message):
-        if not self.dmarc_subject.match(message.header('Subject')):
+        try:
+            if not self.dmarc_subject.match(message.header('Subject')):
+                return
+        except LookupError:
             return
 
         auth_results = {'dkim': True, 'spf': True}
