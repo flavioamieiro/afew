@@ -15,6 +15,7 @@ Add tags 2 of the tags below:
 
 import email
 import email.policy
+import gzip
 import logging
 import re
 import tempfile
@@ -58,6 +59,9 @@ class ReportFilesIterator:
                             from zip_error
             elif part.get_content_type() == 'application/xml':
                 yield part.get_payload(decode=True)
+            elif part.get_content_type() == 'application/gzip':
+                data = part.get_payload(decode=True)
+                yield gzip.decompress(data)
 
 
 def and_dict(dict1, dict2):
